@@ -1,0 +1,23 @@
+name: PlayerBounties
+version: 0.81-Beta
+api-version: 1.17
+author: StivenFocs
+main: cloud.stivenfocs.PlayerBounties.Loader
+depend: [Vault]
+description: "Apply a bounty to a player IF YOU WANT THEM DEAD"
+commands:
+    playerbounties:
+        aliases: [pb,bounty]
+permission:
+    playerbounties.bounty:
+        default: true
+    playerbounties.claim:
+        default: true
+    playerbounties.list:
+        default: true
+    playerbounties.stats:
+        default: true
+    playerbounties.stats.others:
+        default: true
+    playerbounties.admin:
+        default: op
