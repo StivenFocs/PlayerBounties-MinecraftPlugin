@@ -17,8 +17,6 @@ public class BountyHandler {
 
     public static Boolean isBounted(UUID puid) {
         for(Bounty bounty : bounties) {
-            System.out.println("is bounted: " + bounty);
-            System.out.println(bounty.getPlayer().equals(puid));
             if (bounty.getPlayer().equals(puid)) {
                 return true;
             }
@@ -26,8 +24,16 @@ public class BountyHandler {
         return false;
     }
 
+    public static Bounty getBounty(UUID puid) {
+        for(Bounty bounty : bounties) {
+            if (bounty.getPlayer().equals(puid)) {
+                return bounty;
+            }
+        }
+        return null;
+    }
+
     public Bounty startTask(UUID player, UUID creator, int duration, int value, Boolean broadcast) {
-        System.out.println("test: " + player);
         try {
             String creator_name = Vars.console_name;
             if (creator != null) {

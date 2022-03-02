@@ -31,7 +31,6 @@ public class PrimaryKillEvent implements Listener {
     //////////////////////////
 
     public static HashMap<UUID, UUID> lastHit = new HashMap<>();
-    //public static HashMap<UUID, UUID> lastKill = new HashMap<>();
 
     //////////////////////////
 

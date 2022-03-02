@@ -71,14 +71,18 @@ public class Vars {
 
     public static Boolean bounty_end_at_death = false;
     public static String console_name = "CONSole";
-
     public static List<String> bounty_expire_commands = new ArrayList<>();
     public static List<String> bounty_claim_commands = new ArrayList<>();
-
     public static Boolean killstreak_bounty_enabled = false;
     public static Integer killstreak_bounty_offset = 99;
     public static Integer killstreak_bounty_value = 500;
     public static Integer killstreak_bounty_duration = 83600;
+    public static String player_selector_displayname = "";
+    public static String template_selector_displayname = "";
+    public static Boolean border_enabled = false;
+    public static String border_color = "";
+    public static String bounted_placeholder = "";
+    public static String not_bounted_placeholder = "";
 
     public static String prefix = "";
     public static String configuration_reloaded = "";
@@ -95,6 +99,8 @@ public class Vars {
     public static String not_enough_money = "";
     public static String not_yourself = "";
     public static String already_wanted = "";
+    public static String template_displayname = "";
+    public static List<String> template_lore = new ArrayList<>();
     public static List<String> help_admin = new ArrayList<>();
     public static List<String> help_user = new ArrayList<>();
 
@@ -120,7 +126,6 @@ public class Vars {
 
             getConfig().addDefault("options.bounty_end_at_death", false);
             getConfig().addDefault("options.console_name", "CONSOLE");
-
             List<String> new_expire_commands = new ArrayList<>();
             new_expire_commands.add("minecraft:give %player% diamond 1 0 {display:{Name:'§eexpired bounty: %player%'}}");
             new_expire_commands.add("minecraft:give %creator% dirt 1 0 {display:{Name:'§eexpired bounty: %player%'}}");
@@ -128,14 +133,19 @@ public class Vars {
             List<String> new_claim_commands = new ArrayList<>();
             new_claim_commands.add("minecraft:give %claimer% diamond 1 0 {display:{Name:'§eclaimed bounty: %player%'}}");
             getConfig().addDefault("options.bounty_claim.commands", new_claim_commands);
-
             getConfig().addDefault("options.killstreak_bounty.enabled", false);
             getConfig().addDefault("options.killstreak_bounty.offset", 8);
             getConfig().addDefault("options.killstreak_bounty.value", 500);
             getConfig().addDefault("options.killstreak_bounty.duration", 84000);
-
+            getConfig().addDefault("options.gui.player_selector", "&lSelect a Player");
+            getConfig().addDefault("options.gui.teamplate_selector", "&lSelect a Teamplate");
+            getConfig().addDefault("options.gui.border.enabled", true);
+            getConfig().addDefault("options.gui.border.color", "BLACK"); // Work in progress
+            getConfig().addDefault("options.bounted_placeholder", " &cBounty on");
+            getConfig().addDefault("options.not_bounted_placeholder", "");
             if (getConfig().get("options.templates") == null) {
-                getConfig().addDefault("options.templates.default.displayname", "&bDefault");
+                getConfig().addDefault("options.templates.default.material", "NETHER_STAR");
+                getConfig().addDefault("options.templates.default.displayname", "&bDefault Template");
                 getConfig().addDefault("options.templates.default.value", 500);
                 getConfig().addDefault("options.templates.default.price", 800);
                 getConfig().addDefault("options.templates.default.duration", 84000);
@@ -156,35 +166,44 @@ public class Vars {
             getConfig().addDefault("messages.not_enough_money", "&cYou do not have enough money.");
             getConfig().addDefault("messages.not_yourself", "&cYou cannot do this to yourself.");
             getConfig().addDefault("messages.already_wanted", "&cThis player is already wanted");
+            getConfig().addDefault("messages.template_displayname", "&b%name%");
+            List<String> new_template_lore = new ArrayList<>();
+            new_template_lore.add(" ");
+            new_template_lore.add("&cValue: &f%value%");
+            new_template_lore.add("&cDuration: &f%duration% seconds");
+            new_template_lore.add(" ");
+            new_template_lore.add("&aPrice $%price%");
+            new_template_lore.add("&eClick to pay");
+            getConfig().addDefault("messages.template_lore", new_template_lore);
             List<String> new_help_admin = new ArrayList<>();
             new_help_admin.add("&4* &c/bounty");
             new_help_admin.add("&4* &c/bounty help");
-            new_help_admin.add("&4* &c/bounty stats [player]");
             new_help_admin.add("&4* &c/bounty reload");
             getConfig().addDefault("messages.help_admin", new_help_admin);
             List<String> new_help_user = new ArrayList<>();
             new_help_user.add("&4* &c/bounty");
             new_help_user.add("&4* &c/bounty help");
-            new_help_user.add("&4* &c/bounty stats [player]");
             getConfig().addDefault("messages.help_user", new_help_user);
 
             plugin.saveConfig();
             plugin.reloadConfig();
             reloadDataConfiguration();
-            reloadpDataConfiguration();
+            //reloadpDataConfiguration();
 
             bounty_end_at_death = getConfig().getBoolean("options.bounty_end_at_death", false);
             console_name = getConfig().getString("options.console_name", "CONSOLE");
-
             bounty_expire_commands = getConfig().getStringList("options.bounty_expire.commands");
             bounty_claim_commands = getConfig().getStringList("options.bounty_claim.commands");
-
             killstreak_bounty_enabled = getConfig().getBoolean("options.killstreak_bounty.enabled", false);
             killstreak_bounty_offset = getConfig().getInt("options.killstreak_bounty.offset", 99);
             killstreak_bounty_value = getConfig().getInt("options.killstreak_bounty.value", 500);
             killstreak_bounty_duration = getConfig().getInt("options.killstreak_bounty.duration", 84000);
-
-            killstreak = new HashMap<>();
+            player_selector_displayname = getConfig().getString("options.gui.player_selector", "&lSelect a Player");
+            template_selector_displayname = getConfig().getString("options.gui.teamplate_selector", "&lSelect a Teamplate");
+            border_enabled = getConfig().getBoolean("options.gui.border.enabled");
+            border_color = getConfig().getString("options.gui.border.color", "BLACK");
+            bounted_placeholder = getConfig().getString("options.bounted_placeholder", " &cBounty on");
+            not_bounted_placeholder = getConfig().getString("options.not_bounted_placeholder", "");
 
             prefix = getConfig().getString("messages.prefix", "");
             you_got_money = getConfig().getString("messages.you_got_money", "&aYou got $&f%value%");
@@ -201,13 +220,18 @@ public class Vars {
             not_enough_money = getConfig().getString("messages.not_enough_money", "&cYou do not have enough money.");
             not_yourself = getConfig().getString("messages.not_yourself", "&cYou cannot do this to yourself.");
             already_wanted = getConfig().getString("messages.already_wanted", "&cThis player is already wanted");
+            template_displayname = getConfig().getString("messages.template_displayname", "&b%name%");
+            template_lore = getConfig().getStringList("messages.template_lore");
             help_admin = getConfig().getStringList("messages.help_admin");
             help_user = getConfig().getStringList("messages.help_user");
 
             plugin.getLogger().info("Configuration reloaded");
 
+            killstreak = new HashMap<>();
+
             SelectorHandler.closeAll(getSelectorHandler().getPlayerSelector());
             SelectorHandler.closeAll(getSelectorHandler().getTemplateSelector());
+            getSelectorHandler().cancelInventories();
             SelectorHandler.chosen_player = new HashMap<>();
 
             return true;

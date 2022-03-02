@@ -4,10 +4,7 @@ package cloud.stivenfocs.PlayerBounties.Events;
 import cloud.stivenfocs.PlayerBounties.BountyHandler;
 import cloud.stivenfocs.PlayerBounties.Loader;
 import cloud.stivenfocs.PlayerBounties.Vars;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.SkullType;
+import org.bukkit.*;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,6 +14,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -51,13 +49,54 @@ public class SelectorHandler implements Listener {
 
     public Inventory getPlayerSelector() {
         if (player_selector == null) {
-            player_selector = Bukkit.createInventory(null, 54, "Choose a player");
+            player_selector = Bukkit.createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', Vars.player_selector_displayname));
         }
         return player_selector;
     }
 
     public void refreshPlayerSelector() {
-        player_selector.clear();
+        if (player_selector != null) {
+            player_selector.clear();
+        } else {
+            player_selector = Bukkit.createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', Vars.player_selector_displayname));
+        }
+
+        if (Vars.border_enabled) {
+            ItemStack border = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
+            ItemMeta borderMeta = border.getItemMeta();
+            borderMeta.setDisplayName(" ");
+            border.setItemMeta(borderMeta);
+
+            player_selector.setItem(0, border);
+            player_selector.setItem(1, border);
+            player_selector.setItem(2, border);
+            player_selector.setItem(3, border);
+            player_selector.setItem(4, border);
+            player_selector.setItem(5, border);
+            player_selector.setItem(6, border);
+            player_selector.setItem(7, border);
+            player_selector.setItem(8, border);
+
+            player_selector.setItem(9, border);
+            player_selector.setItem(18, border);
+            player_selector.setItem(27, border);
+            player_selector.setItem(36, border);
+
+            player_selector.setItem(17, border);
+            player_selector.setItem(26, border);
+            player_selector.setItem(35, border);
+            player_selector.setItem(44, border);
+
+            player_selector.setItem(45, border);
+            player_selector.setItem(46, border);
+            player_selector.setItem(47, border);
+            player_selector.setItem(48, border);
+            player_selector.setItem(49, border);
+            player_selector.setItem(50, border);
+            player_selector.setItem(51, border);
+            player_selector.setItem(52, border);
+            player_selector.setItem(53, border);
+        }
 
         for(Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (!BountyHandler.isBounted(onlinePlayer.getUniqueId())) {
@@ -74,47 +113,102 @@ public class SelectorHandler implements Listener {
 
     ///////////////////////////////
 
+    public void cancelInventories() {
+        player_selector = null;
+        template_selector = null;
+    }
+
+    ///////////////////////////////
+
     public Inventory getTemplateSelector() {
         if (template_selector == null) {
-            template_selector = Bukkit.createInventory(null, 54, "Choose a bounty template");
+            template_selector = Bukkit.createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', Vars.template_selector_displayname));
         }
         return template_selector;
     }
 
     public void refreshTemplateSelector() {
-        template_selector.clear();
+        if (template_selector != null) {
+            template_selector.clear();
+        } else {
+            template_selector = Bukkit.createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', Vars.template_selector_displayname));
+        }
         templates_items = new HashMap<>();
 
         int slot = 0;
+
+        if (Vars.border_enabled) {
+            slot = 10;
+
+            ItemStack border = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
+            ItemMeta borderMeta = border.getItemMeta();
+            borderMeta.setDisplayName(" ");
+            border.setItemMeta(borderMeta);
+
+            template_selector.setItem(0, border);
+            template_selector.setItem(1, border);
+            template_selector.setItem(2, border);
+            template_selector.setItem(3, border);
+            template_selector.setItem(4, border);
+            template_selector.setItem(5, border);
+            template_selector.setItem(6, border);
+            template_selector.setItem(7, border);
+            template_selector.setItem(8, border);
+
+            template_selector.setItem(9, border);
+            template_selector.setItem(18, border);
+            template_selector.setItem(27, border);
+            template_selector.setItem(36, border);
+
+            template_selector.setItem(17, border);
+            template_selector.setItem(26, border);
+            template_selector.setItem(35, border);
+            template_selector.setItem(44, border);
+
+            template_selector.setItem(45, border);
+            template_selector.setItem(46, border);
+            template_selector.setItem(47, border);
+            template_selector.setItem(48, border);
+            template_selector.setItem(49, border);
+            template_selector.setItem(50, border);
+            template_selector.setItem(51, border);
+            template_selector.setItem(52, border);
+            template_selector.setItem(53, border);
+        }
+
         for(String template : plugin.getConfig().getConfigurationSection("options.templates").getKeys(false)) {
-            String template_path = "options.templates." + template;
+            try {
+                String template_path = "options.templates." + template;
 
-            ItemStack templateItem = new ItemStack(Material.OAK_SIGN, 1);
-            ItemMeta templateMeta = templateItem.getItemMeta();
-            templateMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString(template_path + ".displayname")));
-            List<String> itemLore = new ArrayList<>();
-            itemLore.add(ChatColor.translateAlternateColorCodes('&', " "));
-            itemLore.add(ChatColor.translateAlternateColorCodes('&', "&cValue &f%value%".replaceAll("%value%", plugin.getConfig().getString(template_path + ".value"))));
-            itemLore.add(ChatColor.translateAlternateColorCodes('&', "&cDuration &f%duration%".replaceAll("%duration%", plugin.getConfig().getString(template_path + ".duration"))));
-            itemLore.add(ChatColor.translateAlternateColorCodes('&', ""));
-            itemLore.add(ChatColor.translateAlternateColorCodes('&', "&ePrice: &f%price%".replaceAll("%price%", plugin.getConfig().getString(template_path + ".price"))));
-            itemLore.add(ChatColor.translateAlternateColorCodes('&', "&eLeft click to pay"));
-            templateMeta.setLore(itemLore);
-            templateItem.setItemMeta(templateMeta);
-
-            int count = 1;
-            while(true) {
-                if (template_selector.contains(templateItem)) {
-                    count++;
-                    templateItem.setAmount(count);
-                } else {
-                    break;
+                ItemStack templateItem = new ItemStack(Material.valueOf(plugin.getConfig().getString(template_path + ".material")), 1);
+                ItemMeta templateMeta = templateItem.getItemMeta();
+                templateMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Vars.template_displayname.replaceAll("%name%", plugin.getConfig().getString(template_path + ".displayname"))));
+                templateMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                templateMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+                List<String> lore = cloud.stivenfocs.stivenUtils.colorlist(Vars.template_lore);
+                List<String> placeholdered_lore = new ArrayList<>();
+                for (String line : lore) {
+                    placeholdered_lore.add(line.replaceAll("%value%", plugin.getConfig().getString(template_path + ".value")).replaceAll("%duration%", plugin.getConfig().getString(template_path + ".duration")).replaceAll("%price%", this.plugin.getConfig().getString(template_path + ".price")));
                 }
-            }
+                templateMeta.setLore(placeholdered_lore);
+                templateItem.setItemMeta(templateMeta);
 
-            template_selector.setItem(slot, templateItem);
-            slot++;
-            templates_items.put(templateItem, template);
+                int count = 1;
+                while (true) {
+                    if (template_selector.contains(templateItem)) {
+                        count++;
+                        templateItem.setAmount(count);
+                    } else {
+                        break;
+                    }
+                }
+
+                template_selector.setItem(slot, templateItem);
+                slot++;
+                templates_items.put(templateItem, template);
+            } catch (Exception ex) {
+                plugin.getLogger().warning("Unable to build the '" + template + "' template's button, didn't added to the template inventory");
+            }
         }
     }
 
@@ -123,14 +217,18 @@ public class SelectorHandler implements Listener {
     public static void closeAll(Inventory gui) {
         List<HumanEntity> temp_viewers = new ArrayList<>();
 
-        for(HumanEntity human : gui.getViewers()) {
-            temp_viewers.add(human);
-        }
+        try {
+            for (HumanEntity human : gui.getViewers()) {
+                temp_viewers.add(human);
+            }
+        } catch (Exception ex) {}
 
-        for(HumanEntity human : temp_viewers) {
-            Player p = (Player) human;
-            p.closeInventory();
-        }
+        try {
+            for (HumanEntity human : temp_viewers) {
+                Player p = (Player) human;
+                p.closeInventory();
+            }
+        } catch (Exception ex) {}
     }
 
     ///////////////////////////////
@@ -138,6 +236,7 @@ public class SelectorHandler implements Listener {
     @EventHandler
     public void onGUIClick(InventoryClickEvent event) {
         Player p = (Player) event.getWhoClicked();
+        if (event.getCurrentItem() == null) return;
 
         System.out.println(chosen_player.toString());
         UUID t_chosen_player = chosen_player.get(p.getUniqueId());

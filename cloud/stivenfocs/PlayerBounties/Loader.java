@@ -69,6 +69,10 @@ public class Loader extends JavaPlugin {
                 Vars.reloadDataConfiguration();
             }
         }
+
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PAPIExpansion(this).register();
+        }
     }
 
     public void onDisable() {

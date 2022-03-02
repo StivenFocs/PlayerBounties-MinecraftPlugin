@@ -3,9 +3,6 @@ package cloud.stivenfocs.PlayerBounties.Commands;
 import cloud.stivenfocs.PlayerBounties.Loader;
 import cloud.stivenfocs.PlayerBounties.Vars;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.SkullType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,8 +11,6 @@ import org.bukkit.command.TabCompleter;
 import cloud.stivenfocs.stivenUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,7 +95,7 @@ public class PlayerBounties implements CommandExecutor, TabCompleter {
                 }
                 return true;
             }
-            if (args[0].equalsIgnoreCase("stats")) {
+            /*if (args[0].equalsIgnoreCase("stats")) {
                 if (args.length <= 1) {
                     if (sender instanceof Player) {
                         if (sender.hasPermission("playerbounties.stats")) {
@@ -123,7 +118,7 @@ public class PlayerBounties implements CommandExecutor, TabCompleter {
                     }
                 }
                 return true;
-            }
+            }*/
             plugin.sendString(Vars.unknow_subcommand, sender);
         }
         return false;
